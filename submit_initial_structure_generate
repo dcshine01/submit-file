@@ -1,0 +1,54 @@
+#!/bin/bash
+# ---- PBS (PBS Pro / OpenPBS / Torque) -------------------------------------
+#PBS -N all
+##PBS -q workq
+#PBS -l nodes=1:ppn=32
+##PBS -l walltime=03:00:00
+##PBS -l mem=16gb
+#PBS -o result.out
+#PBS -e result.err
+cd "$PBS_O_WORKDIR"
+
+# ---- SLURM ----------------------------------------------------------------
+# #SBATCH --job-name=nanocluster_gen
+# #SBATCH --partition=workq
+# #SBATCH --nodes=1
+# #SBATCH --ntasks-per-node=8
+# #SBATCH --time=03:00:00
+# #SBATCH --mem=16G
+# #SBATCH --output=result.out
+# #SBATCH --error=result.err
+# cd "$SLURM_SUBMIT_DIR"
+
+# ---- LSF ------------------------------------------------------------------
+# #BSUB -J nanocluster_gen
+# #BSUB -q normal
+# #BSUB -n 8
+# #BSUB -W 03:00
+# #BSUB -M 16000
+# #BSUB -o result.out
+# #BSUB -e result.err
+
+# ---- SGE (Sun Grid Engine / Open Grid Scheduler) --------------------------
+# #$ -N nanocluster_gen
+# #$ -q all.q
+# #$ -pe smp 8
+# #$ -l h_rt=03:00:00
+# #$ -cwd
+# #$ -o result.out
+# #$ -e result.err
+
+# ---------------------------------------------------------------------------
+# Environment setup (edit to match your system).
+# Point PYTHON at the interpreter that has numpy/scipy/pymatgen installed.
+# Example (conda env by full path - most portable):
+#   PYTHON=/home/user/softwares/agox_dev_chgnet_env/bin/python
+# Or activate a named environment first:
+#   source ~/miniconda3/etc/profile.d/conda.sh && conda activate myenv
+# ---------------------------------------------------------------------------
+PYTHON=python
+
+# ---------------------------------------------------------------------------
+# Run the generator non-interactively over every cluster system in input.txt.
+# ---------------------------------------------------------------------------
+"$PYTHON" generate_nanoclusters.py --input input.txt > result.out 2>&1
